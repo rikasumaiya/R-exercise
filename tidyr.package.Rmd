@@ -1,0 +1,45 @@
+---
+title: 'Data Analysis: US Presidential Campaign Finance'
+author: "sumaiya"
+date: "1/15/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+```
+
+## R Markdown
+We first create a data.frame of stock prices for three frictional companies X, Y and Z. A column header are known as key and its numbers are values. Key-value pair is a typical property of any data.frame. But it is not necessary that all the data.frame will have this property. To tidy a messy data set, we use tidyr package. 
+
+```{r cars}
+stocks <- data.frame(
+  time= as.Date('2009-01-01') + 0:9,
+  X = rnorm(10,20,1),
+  Y= rnorm(10, 20,2),
+  Z= rnorm (10,20,4)
+)
+```
+
+## tidyr
+The main two functions of tidyr are gather and spread. The help page of gather says that it takes multiple columns and collapses into key-value pairs, duplicating all other columns as needed. Though this description is not very clear, the main reaon to use this funciton is quite clear. We use gather() when we notice that we have columns that are not valriables. 
+
+```{r pressure, echo=FALSE}
+library(tidyr)
+stocks_tidy.gather <- gather(stocks, key=stock, value = price, -time)
+stocks_tidy.gather
+```
+The stocks_tidy.gather, the key is stock and values got the column name price. -time exclude time to be in the key or value columns, rather it duplicates time for all X and Y stock prices. According to the help page, -time means all pairs except time contains key-value pair.
+gather(stocks, stock, price, X:Z); in this statement the columns X through Z are included in the key:value pairs.
+Our data set is now tidy where it contains three variables time, stock and price. The other important function of tidyr is spread which is essentially complement of gather. It spreads key:value pairs across multiple columns. It takes two columns key and value, and spreads them in a way that every key becomes a column header and they contain the associated values. 
+Let's spread stocks_tidy with spread function.
+```{r}
+stocks_tidy.spread <- spread(stocks_tidy.gather, key=stock, value=price, fill = NA)
+stocks_tidy.spread
+```
+Conclusion:
+tidyr is considered to be a evolution of reshape2 packeges. melt() and decast() functions of reshape2 also do similar work.
+
+
